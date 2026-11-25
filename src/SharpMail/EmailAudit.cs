@@ -1,0 +1,42 @@
+namespace SharpMail;
+
+public sealed class EmailAudit(IAuditStore store, TimeProvider clock)
+{
+    public async Task<AuditDetail?> GetAsync(Guid id, CancellationToken token)
+    {
+        var attempt = await store.FindAsync(id, token);
+        if (attempt is null) return null;
+        var events = await store.ReadEventsAsync(id, token);
+        return new(attempt, events.OrderBy(e => e.Notification.OccurredAtUtc).ToArray());
+    }
+
+    public async Task<bool?> RecordAsync(Guid? attemptId, string? transport, string? providerMessageId,
+        DeliveryNotification notification, CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(notification);
+        ArgumentException.ThrowIfNullOrWhiteSpace(notification.EventId);
+        if (!Enum.IsDefined(notification.Kind) || notification.OccurredAtUtc == default)
+            throw new ArgumentException("Supply a delivery kind and occurrence time.");
+        if (attemptId is null)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(transport);
+            ArgumentException.ThrowIfNullOrWhiteSpace(providerMessageId);
+            var matches = await store.FindByProviderIdAsync(transport, providerMessageId, token);
+            if (matches.Count != 1) return null;
+            attemptId = matches[0];
+        }
+        var attempt = await store.FindAsync(attemptId.Value, token);
+        if (attempt is null) return null;
+        var recipients = notification.RecipientRole switch
+        {
+            "To" => attempt.Message.To,
+            "Cc" => attempt.Message.Cc,
+            "Bcc" => attempt.Message.Bcc,
+            _ => throw new ArgumentException("Unknown recipient role.")
+        };
+        if ((uint)notification.RecipientIndex >= recipients.Length)
+            throw new ArgumentException("Recipient index is outside the stored list.");
+        var normalized = notification with { OccurredAtUtc = notification.OccurredAtUtc.ToUniversalTime() };
+        return await store.TryAppendAsync(attemptId.Value, new(normalized, clock.GetUtcNow()), token);
+    }
+}

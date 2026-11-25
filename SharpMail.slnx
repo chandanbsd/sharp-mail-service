@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="demo/SharpMail.Api/SharpMail.Api.csproj" />
+  <Project Path="demo/SharpMail.AppHost/SharpMail.AppHost.csproj" />
+  <Project Path="src/SharpMail/SharpMail.csproj" />
+  <Project Path="src/SharpMail.Blobs/SharpMail.Blobs.csproj" />
+  <Project Path="src/SharpMail.Cosmos/SharpMail.Cosmos.csproj" />
+  <Project Path="src/SharpMail.Liquid/SharpMail.Liquid.csproj" />
+  <Project Path="src/SharpMail.SqlServer/SharpMail.SqlServer.csproj" />
+</Solution>

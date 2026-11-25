@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "demo/SharpMail.AppHost/SharpMail.AppHost.csproj"
+  }
+}

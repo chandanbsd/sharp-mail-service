@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UserSecretsId>sharpmail-demo</UserSecretsId>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="17.0.0" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="17.0.0" />
+  </ItemGroup>
+</Project>
