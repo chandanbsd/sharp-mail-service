@@ -28,10 +28,10 @@ The demo sender connects only to the Mailpit endpoint supplied by Aspire. Mailpi
 With the APIs ready, run the walkthrough from another terminal:
 
 ```sh
-python3 demo/walkthrough.py
+dotnet run demo/Walkthrough.cs --
 ```
 
-To exercise one backend, append `sql`, `blobs`, or `cosmos`. Each run renders a receipt, submits it twice with the same ID, checks for one captured message, submits conflicting content, records separate To and Cc delivery events, repeats the callbacks, and looks up the original receipt. It also submits a synthetic address rejected by Mailpit and checks that a failed attempt has no acceptance timestamp. Six parallel submissions with different subjects then compete for one reference. The walkthrough checks that just one subject wins and exactly one message is captured. The script prints the ticket lookup URLs. Each run leaves its audit evidence in the local stores.
+To exercise one backend, append `sql`, `blobs`, or `cosmos`. Each run renders a receipt, submits it twice with the same ID, checks for one captured message, submits conflicting content, records separate To and Cc delivery events, repeats the callbacks, and looks up the original receipt. It also submits a synthetic address rejected by Mailpit and checks that a failed attempt has no acceptance timestamp. Six parallel submissions with different subjects then compete for one reference. The walkthrough checks that just one subject wins and exactly one message is captured. The program prints the ticket lookup URLs. Each run leaves its audit evidence in the local stores.
 
 | API operation | Result |
 |---|---|
@@ -41,7 +41,7 @@ To exercise one backend, append `sql`, `blobs`, or `cosmos`. Each run renders a 
 | GET /attempts/{id} | Retrieve the snapshot, SDK outcome, and all known recipient events. |
 | POST /delivery-events | Record a simulated host callback using an attempt ID or transport and provider message ID. |
 
-Look at [the walkthrough](demo/walkthrough.py) for complete JSON requests. The delivery endpoint returns 422 for unresolved references so the host can retain them for reconciliation. Duplicate event identities return success with `appended=false`. The walkthrough simulates delayed provider events because Mailpit captures messages locally.
+Look at [the walkthrough](demo/Walkthrough.cs) for the request and response examples. The delivery endpoint returns 422 for unresolved references so the host can retain them for reconciliation. Duplicate event identities return success with `appended=false`. The walkthrough simulates delayed provider events because Mailpit captures messages locally.
 
 ## Integrate in a host
 
