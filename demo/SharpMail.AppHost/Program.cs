@@ -34,6 +34,7 @@ builder.Build().Run();
 IResourceBuilder<ContainerResource> AddApi(string store, int port) =>
     builder.AddDockerfile($"api-{store}", "../..", "demo/SharpMail.Api/Dockerfile")
         .WithHttpEndpoint(port: port, targetPort: 8080)
+        .WithUrlForEndpoint("http", _ => new() { Url = "/scalar", DisplayText = "Scalar UI" })
         .WithEnvironment("AuditProvider", store)
         .WithEnvironment("MailpitEndpoint", mailpit.GetEndpoint("smtp"))
         .WaitFor(mailpit);
