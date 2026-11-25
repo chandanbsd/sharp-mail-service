@@ -23,6 +23,14 @@ Aspire launches the local control plane and builds the ASP.NET Core API in conta
 
 The demo sender connects only to the Mailpit endpoint supplied by Aspire. Mailpit accepts recipients ending in `@demo.invalid`. Forwarding and relay are disabled. Its inbox shows the SMTP message; the audit retains Bcc recipients even when the MIME headers omit them. The emulator credentials and Cosmos development certificate handling belong to the local demo.
 
+## Explore the API in Scalar
+
+Open [SQL](http://localhost:18081/scalar), [Blob](http://localhost:18082/scalar), or [Cosmos](http://localhost:18083/scalar). Each UI uses the Microsoft-generated document at `/openapi/v1.json` and calls its own API instance. In Scalar, send **POST /attempt-ids**, copy the returned ID into **PUT /attempts/{id}**, and send the prefilled receipt. Use **GET /attempts/{id}** to inspect it and open [Mailpit](http://localhost:18025) to see the captured message. To simulate delivery, replace the example attempt ID in **POST /delivery-events** with the same ID.
+
+## Step through a request
+
+The demo container publishes a Debug build with portable symbols for the API and libraries. In Visual Studio for Windows 18.10 or later, open the matching source checkout, choose **Debug > Attach to Process**, select **Podman** as the connection type, then select the API container for the backend you are exercising and its `dotnet` process. Set a breakpoint in `EmailSubmission.SubmitAsync` and send a PUT request through that backend’s Scalar page. The IDE must be able to reach the container engine. Podman discovery on a Windows workstation and access to a separate Mac’s Podman VM are different setups. See [Microsoft’s container attachment guide](https://learn.microsoft.com/en-us/visualstudio/debugger/attach-to-process-running-in-docker-container).
+
 ## Exercise the API
 
 With the APIs ready, run the walkthrough from another terminal:

@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="3.2.1" />
     <ProjectReference Include="../../src/SharpMail/SharpMail.csproj" />
     <ProjectReference Include="../../src/SharpMail.SqlServer/SharpMail.SqlServer.csproj" />
     <ProjectReference Include="../../src/SharpMail.Blobs/SharpMail.Blobs.csproj" />
