@@ -7,9 +7,9 @@ public interface IEmailSubmissionService
 {
     Guid NewAttemptId();
 
-    Task<SubmissionResult> SubmitAsync(
+    Task<EmailSubmissionResult> SubmitAsync(
         Guid attemptId,
         string? correlationId,
-        EmailMessage message,
+        EmailMessageInput message,
         CancellationToken cancellationToken = default);
 }

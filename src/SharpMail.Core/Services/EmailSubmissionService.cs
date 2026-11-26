@@ -14,13 +14,13 @@ internal sealed class EmailSubmissionService(
 {
     public Guid NewAttemptId() => Guid.CreateVersion7();
 
-    public async Task<SubmissionResult> SubmitAsync(Guid attemptId, string? correlationId, EmailMessage message,
+    public async Task<EmailSubmissionResult> SubmitAsync(Guid attemptId, string? correlationId, EmailMessageInput message,
         CancellationToken cancellationToken = default)
     {
         if (attemptId == Guid.Empty) throw new ArgumentException("An attempt ID is required.");
         ArgumentNullException.ThrowIfNull(message);
         message.Validate();
-        var attempt = new EmailAttempt(attemptId, correlationId, sender.Transport, message, clock.GetUtcNow());
+        var attempt = new EmailAttemptResult(attemptId, correlationId, sender.Transport, message, clock.GetUtcNow());
         if (!await dataContext.TryCreateAsync(attempt, cancellationToken))
         {
             var existing = await dataContext.FindAsync(attemptId, cancellationToken)
@@ -30,7 +30,7 @@ internal sealed class EmailSubmissionService(
             return new(existing, Reused: true, OutcomePersisted: true);
         }
 
-        SdkOutcome outcome;
+        EmailSendResult outcome;
         try
         {
             outcome = await sender.SubmitAsync(attemptId, message, cancellationToken);

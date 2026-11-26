@@ -45,10 +45,10 @@ internal sealed class Walkthrough(
             templateKey = "orders/receipt",
             model = new { orderNumber = "42", customerName = "Pat & Jo" }
         });
-        var content = await ReadAsync<RenderedContent>(preview);
+        var content = await ReadAsync<TemplateRenderResult>(preview);
         Require(content.HtmlBody?.Contains("Pat &amp; Jo") == true && content.TextBody?.Contains("Pat & Jo") == true,
             "Expected HTML escaping and plain-text rendering.");
-        var message = new EmailMessage(new("store@demo.invalid"), [new("customer@demo.invalid")],
+        var message = new EmailMessageInput(new("store@demo.invalid"), [new("customer@demo.invalid")],
             [new("accounts@demo.invalid")], [new("archive@demo.invalid")], null, content);
 
         await VerifyReceiptAsync(message);
@@ -56,14 +56,14 @@ internal sealed class Walkthrough(
         await VerifyConcurrentSubmissionsAsync(message);
     }
 
-    private async Task VerifyReceiptAsync(EmailMessage message)
+    private async Task VerifyReceiptAsync(EmailMessageInput message)
     {
         var url = await NewAttemptAsync();
         using var first = await SubmitAsync(url, message);
-        var receipt = await ReadAsync<SubmissionResult>(first);
+        var receipt = await ReadAsync<EmailSubmissionResult>(first);
         Require(receipt.Attempt.Status == SubmissionStatus.Accepted && receipt.OutcomePersisted, "Expected persisted acceptance.");
         using var repeat = await SubmitAsync(url, message);
-        Require((await ReadAsync<SubmissionResult>(repeat)).Reused, "Expected the existing attempt.");
+        Require((await ReadAsync<EmailSubmissionResult>(repeat)).Reused, "Expected the existing attempt.");
         using var conflict = await SubmitAsync(url, message with { Content = message.Content with { Subject = "Changed" } });
         Require(conflict.StatusCode == HttpStatusCode.Conflict, "Changed content must conflict.");
 
@@ -73,7 +73,7 @@ internal sealed class Walkthrough(
             {
                 transport = "local-mailpit",
                 receipt.Attempt.ProviderMessageId,
-                notification = new DeliveryNotification($"event-{kind}", role, 0, kind, DateTimeOffset.UtcNow)
+                notification = new DeliveryNotificationInput($"event-{kind}", role, 0, kind, DateTimeOffset.UtcNow)
             };
             foreach (var expectedAppend in new[] { true, false })
             {
@@ -90,25 +90,25 @@ internal sealed class Walkthrough(
         Console.WriteLine($"{url} — accepted once, original content retained, two delivery events");
     }
 
-    private async Task VerifyRejectionAsync(EmailMessage message)
+    private async Task VerifyRejectionAsync(EmailMessageInput message)
     {
         var url = await NewAttemptAsync();
         using var response = await SubmitAsync(url, message with { To = [new("rejected@example.test")], Cc = [], Bcc = [] });
-        var result = await ReadAsync<SubmissionResult>(response);
+        var result = await ReadAsync<EmailSubmissionResult>(response);
         Require(result.OutcomePersisted && result.Attempt.Status == SubmissionStatus.Failed && result.Attempt.AcceptedBySdkAtUtc is null,
             "Expected persisted rejection without an acceptance time.");
         Console.WriteLine($"{url} — local SMTP rejection recorded");
     }
 
-    private async Task VerifyConcurrentSubmissionsAsync(EmailMessage message)
+    private async Task VerifyConcurrentSubmissionsAsync(EmailMessageInput message)
     {
         var url = await NewAttemptAsync();
         var subjects = await Task.WhenAll(Enumerable.Range(1, 6).Select(async number =>
         {
-            var content = new RenderedContent($"Concurrent receipt {number}", null, "Plain receipt");
+            var content = new TemplateRenderResult($"Concurrent receipt {number}", null, "Plain receipt");
             using var response = await SubmitAsync(url, message with { Content = content });
             if (response.StatusCode == HttpStatusCode.Conflict) return null;
-            var result = await ReadAsync<SubmissionResult>(response);
+            var result = await ReadAsync<EmailSubmissionResult>(response);
             Require(result.Attempt.Status == SubmissionStatus.Accepted && result.OutcomePersisted, "Expected a persisted winner.");
             return content.Subject;
         }));
@@ -126,13 +126,13 @@ internal sealed class Walkthrough(
         return new Uri(api.BaseAddress!, $"/attempts/{reference["attemptId"]!.GetValue<Guid>()}");
     }
 
-    private Task<HttpResponseMessage> SubmitAsync(Uri url, EmailMessage message) =>
+    private Task<HttpResponseMessage> SubmitAsync(Uri url, EmailMessageInput message) =>
         api.PutAsJsonAsync(url, new { correlationId = "order-42", message }, AuditJson.Options);
 
-    private async Task<AuditDetail> LookupAsync(Uri url)
+    private async Task<EmailAuditResult> LookupAsync(Uri url)
     {
         using var response = await api.GetAsync(url);
-        return await ReadAsync<AuditDetail>(response);
+        return await ReadAsync<EmailAuditResult>(response);
     }
 
     private async Task VerifySingleCaptureAsync(Guid id)

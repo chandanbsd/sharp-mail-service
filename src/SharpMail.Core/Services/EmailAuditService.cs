@@ -8,7 +8,7 @@ internal sealed class EmailAuditService(
     IEmailAuditDataContext dataContext,
     TimeProvider clock) : IEmailAuditService
 {
-    public async Task<AuditDetail?> GetAsync(Guid id, CancellationToken token)
+    public async Task<EmailAuditResult?> GetAsync(Guid id, CancellationToken token)
     {
         var attempt = await dataContext.FindAsync(id, token);
         if (attempt is null) return null;
@@ -17,7 +17,7 @@ internal sealed class EmailAuditService(
     }
 
     public async Task<bool?> RecordAsync(Guid? attemptId, string? transport, string? providerMessageId,
-        DeliveryNotification notification, CancellationToken token)
+        DeliveryNotificationInput notification, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(notification);
         ArgumentException.ThrowIfNullOrWhiteSpace(notification.EventId);
