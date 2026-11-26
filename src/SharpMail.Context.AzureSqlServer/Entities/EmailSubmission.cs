@@ -1,6 +1,6 @@
-namespace SharpMail.Context.AzureSqlServer.Models;
+namespace SharpMail.Context.AzureSqlServer.Entities;
 
-internal sealed class AttemptRow
+internal sealed class EmailSubmission
 {
     public Guid AttemptId { get; set; }
     public required string Transport { get; set; }

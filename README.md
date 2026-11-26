@@ -13,7 +13,7 @@ SharpMail records the finalized message before invoking an application's mailer 
 | SharpMail.Context.AzureSqlServer | EF Core context, migrations, and Azure SQL persistence. Depends on Data. |
 | SharpMail.Renderer.Liquid | Liquid rendering and template registration. Implements the Core renderer interface. |
 
-Name operation inputs with an `Input` suffix and returned models with a `Result` suffix. For example, `EmailSendResult` reports what the SDK adapter observed, and `EmailSubmissionResult` includes the audited submission and its persistence status. EF row types and status enums retain their persistence and domain names.
+Name operation inputs with an `Input` suffix and returned models with a `Result` suffix. For example, `EmailSendResult` reports what the SDK adapter observed, and `EmailSubmissionResult` includes the audited submission and its persistence status. Storage units live in `Entities` namespaces. Blob payloads use the shared audit entities directly. SQL maps table entities, and Cosmos wraps the shared payloads in documents carrying the item and partition keys.
 
 Place each primary constructor parameter on its own line, starting on the line after the opening parenthesis. Use one named type per file and match its namespace to its project and folder. The build enforces C# style through SDK analyzers, EditorConfig, and the one-type-per-file analyzer. Run `dotnet format --verify-no-changes` to check formatting.
 

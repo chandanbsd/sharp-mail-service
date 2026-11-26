@@ -27,7 +27,7 @@ partial class EmailAuditContextModelSnapshot : ModelSnapshot
 
         SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-        modelBuilder.Entity("SharpMail.Context.AzureSqlServer.Models.AttemptRow", b =>
+        modelBuilder.Entity("SharpMail.Context.AzureSqlServer.Entities.EmailSubmission", b =>
             {
                 b.Property<Guid>("AttemptId")
                     .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ partial class EmailAuditContextModelSnapshot : ModelSnapshot
                 b.ToTable("SharpMailAttempts");
             });
 
-        modelBuilder.Entity("SharpMail.Context.AzureSqlServer.Models.DeliveryRow", b =>
+        modelBuilder.Entity("SharpMail.Context.AzureSqlServer.Entities.RecipientDeliveryEvent", b =>
             {
                 b.Property<Guid>("AttemptId")
                     .HasColumnType("uniqueidentifier");
@@ -71,9 +71,9 @@ partial class EmailAuditContextModelSnapshot : ModelSnapshot
                 b.ToTable("SharpMailDeliveries");
             });
 
-        modelBuilder.Entity("SharpMail.Context.AzureSqlServer.Models.DeliveryRow", b =>
+        modelBuilder.Entity("SharpMail.Context.AzureSqlServer.Entities.RecipientDeliveryEvent", b =>
             {
-                b.HasOne("SharpMail.Context.AzureSqlServer.Models.AttemptRow", null)
+                b.HasOne("SharpMail.Context.AzureSqlServer.Entities.EmailSubmission", null)
                     .WithMany()
                     .HasForeignKey("AttemptId")
                     .OnDelete(DeleteBehavior.Cascade)

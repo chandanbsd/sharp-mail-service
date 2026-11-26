@@ -2,30 +2,31 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Azure.Cosmos;
+using SharpMail.Context.AzureCosmosDb.Entities;
 using SharpMail.Data;
+using SharpMail.Data.Entities;
 using SharpMail.Data.Interfaces;
-using SharpMail.Data.Models;
 
 namespace SharpMail.Context.AzureCosmosDb.DataContexts;
 
 internal sealed class AzureCosmosDbDataContext(
     Container container) : IEmailAuditDataContext
 {
-    public Task<bool> TryCreateAsync(EmailAttemptResult attempt, CancellationToken token) =>
-        CreateAsync(attempt.AttemptId, new { id = "attempt", attemptId = attempt.AttemptId, attempt }, token);
+    public Task<bool> TryCreateAsync(EmailAttempt attempt, CancellationToken token) =>
+        CreateAsync(attempt.AttemptId, new EmailSubmissionDocument(attempt), token);
 
-    public async Task<EmailAttemptResult?> FindAsync(Guid attemptId, CancellationToken token)
+    public async Task<EmailAttempt?> FindAsync(Guid attemptId, CancellationToken token)
     {
         using var response = await container.ReadItemStreamAsync("attempt", Partition(attemptId), cancellationToken: token);
         if (response.StatusCode == HttpStatusCode.NotFound) return null;
         response.EnsureSuccessStatusCode();
         using var document = await JsonDocument.ParseAsync(response.Content, cancellationToken: token);
-        return document.RootElement.GetProperty("attempt").Deserialize<EmailAttemptResult>(AuditJson.Options);
+        return document.RootElement.GetProperty("attempt").Deserialize<EmailAttempt>(AuditJson.Options);
     }
 
-    public async Task CompleteAsync(EmailAttemptResult completed, CancellationToken token)
+    public async Task CompleteAsync(EmailAttempt completed, CancellationToken token)
     {
-        using var body = Serialize(new { id = "attempt", attemptId = completed.AttemptId, attempt = completed });
+        using var body = Serialize(new EmailSubmissionDocument(completed));
         using var response = await container.ReplaceItemStreamAsync(body, "attempt", Partition(completed.AttemptId), cancellationToken: token);
         response.EnsureSuccessStatusCode();
     }
@@ -37,11 +38,11 @@ internal sealed class AzureCosmosDbDataContext(
         return await QueryAsync<Guid>(query, null, token);
     }
 
-    public Task<bool> TryAppendAsync(Guid attemptId, RecordedDeliveryEventResult delivery, CancellationToken token) =>
-        CreateAsync(attemptId, new { id = DeliveryIdentity.Key(delivery.Notification), attemptId, delivery }, token);
+    public Task<bool> TryAppendAsync(Guid attemptId, RecipientDeliveryEvent delivery, CancellationToken token) =>
+        CreateAsync(attemptId, new RecipientDeliveryEventDocument(attemptId, delivery), token);
 
-    public Task<IReadOnlyList<RecordedDeliveryEventResult>> ReadEventsAsync(Guid attemptId, CancellationToken token) =>
-        QueryAsync<RecordedDeliveryEventResult>(new QueryDefinition("SELECT VALUE c.delivery FROM c WHERE IS_DEFINED(c.delivery)"),
+    public Task<IReadOnlyList<RecipientDeliveryEvent>> ReadEventsAsync(Guid attemptId, CancellationToken token) =>
+        QueryAsync<RecipientDeliveryEvent>(new QueryDefinition("SELECT VALUE c.delivery FROM c WHERE IS_DEFINED(c.delivery)"),
             new QueryRequestOptions { PartitionKey = Partition(attemptId) }, token);
 
     private async Task<IReadOnlyList<T>> QueryAsync<T>(QueryDefinition query, QueryRequestOptions? options, CancellationToken token)

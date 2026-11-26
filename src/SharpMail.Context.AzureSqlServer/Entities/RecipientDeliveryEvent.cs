@@ -1,6 +1,6 @@
-namespace SharpMail.Context.AzureSqlServer.Models;
+namespace SharpMail.Context.AzureSqlServer.Entities;
 
-internal sealed class DeliveryRow
+internal sealed class RecipientDeliveryEvent
 {
     public Guid AttemptId { get; set; }
     public required string EventKey { get; set; }
