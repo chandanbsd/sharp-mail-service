@@ -3,8 +3,13 @@ using System.Net.Mail;
 
 namespace SharpMail.Data;
 
-public sealed record EmailMessage(Mailbox Sender, ImmutableArray<Mailbox> To,
-    ImmutableArray<Mailbox> Cc, ImmutableArray<Mailbox> Bcc, Mailbox? ReplyTo, RenderedContent Content)
+public sealed record EmailMessage(
+    Mailbox Sender,
+    ImmutableArray<Mailbox> To,
+    ImmutableArray<Mailbox> Cc,
+    ImmutableArray<Mailbox> Bcc,
+    Mailbox? ReplyTo,
+    RenderedContent Content)
 {
     public void Validate()
     {

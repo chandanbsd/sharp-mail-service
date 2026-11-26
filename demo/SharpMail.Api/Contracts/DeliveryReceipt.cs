@@ -1,3 +1,4 @@
 namespace SharpMail.Api.Contracts;
 
-internal sealed record DeliveryReceipt(bool Appended);
+internal sealed record DeliveryReceipt(
+    bool Appended);

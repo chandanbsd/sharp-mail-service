@@ -6,7 +6,8 @@ using SharpMail.Data;
 
 namespace SharpMail.Sink.Cosmos;
 
-internal sealed class CosmosAuditStore(Container container) : IAuditStore
+internal sealed class CosmosAuditStore(
+    Container container) : IAuditStore
 {
     public Task<bool> TryCreateAsync(EmailAttempt attempt, CancellationToken token) =>
         CreateAsync(attempt.AttemptId, new { id = "attempt", attemptId = attempt.AttemptId, attempt }, token);
