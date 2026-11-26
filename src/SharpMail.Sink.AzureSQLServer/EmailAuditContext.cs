@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SharpMail.Sink.AzureSQLServer;
 
-public sealed class EmailAuditContext(DbContextOptions<EmailAuditContext> options) : DbContext(options)
+public sealed class EmailAuditContext(
+    DbContextOptions<EmailAuditContext> options) : DbContext(options)
 {
     internal DbSet<AttemptRow> Attempts => Set<AttemptRow>();
     internal DbSet<DeliveryRow> Deliveries => Set<DeliveryRow>();

@@ -2,7 +2,10 @@ using SharpMail.Data;
 
 namespace SharpMail.Core;
 
-public sealed class EmailSubmission(IAuditStore store, IEmailSender sender, TimeProvider clock)
+public sealed class EmailSubmission(
+    IAuditStore store,
+    IEmailSender sender,
+    TimeProvider clock)
 {
     public static Guid NewAttemptId() => Guid.CreateVersion7();
 

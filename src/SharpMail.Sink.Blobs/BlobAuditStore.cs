@@ -7,7 +7,8 @@ using SharpMail.Data;
 
 namespace SharpMail.Sink.Blobs;
 
-internal sealed class BlobAuditStore(BlobContainerClient container) : IAuditStore
+internal sealed class BlobAuditStore(
+    BlobContainerClient container) : IAuditStore
 {
     private BlobClient Snapshot(Guid id) => container.GetBlobClient($"attempts/{id:D}/snapshot");
     private BlobClient Outcome(Guid id) => container.GetBlobClient($"attempts/{id:D}/outcome");

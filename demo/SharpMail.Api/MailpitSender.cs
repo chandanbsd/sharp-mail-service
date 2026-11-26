@@ -6,7 +6,8 @@ using SharpMail.Data;
 
 namespace SharpMail.Api;
 
-internal sealed class MailpitSender(IConfiguration configuration) : IEmailSender
+internal sealed class MailpitSender(
+    IConfiguration configuration) : IEmailSender
 {
     public string Transport => "local-mailpit";
 
