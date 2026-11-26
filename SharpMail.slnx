@@ -10,9 +10,9 @@
   <Folder Name="/src/Renderers/">
     <Project Path="src/SharpMail.Renderer.Liquid/SharpMail.Renderer.Liquid.csproj" />
   </Folder>
-  <Folder Name="/src/Sinks/">
-    <Project Path="src/SharpMail.Sink.AzureSQLServer/SharpMail.Sink.AzureSQLServer.csproj" />
-    <Project Path="src/SharpMail.Sink.Blobs/SharpMail.Sink.Blobs.csproj" />
-    <Project Path="src/SharpMail.Sink.Cosmos/SharpMail.Sink.Cosmos.csproj" />
+  <Folder Name="/src/Contexts/">
+    <Project Path="src/SharpMail.Context.AzureSqlServer/SharpMail.Context.AzureSqlServer.csproj" />
+    <Project Path="src/SharpMail.Context.AzureBlobStorage/SharpMail.Context.AzureBlobStorage.csproj" />
+    <Project Path="src/SharpMail.Context.AzureCosmosDb/SharpMail.Context.AzureCosmosDb.csproj" />
   </Folder>
 </Solution>

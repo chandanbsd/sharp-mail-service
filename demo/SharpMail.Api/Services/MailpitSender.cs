@@ -12,7 +12,7 @@ internal sealed class MailpitSender(
 {
     public string Transport => "local-mailpit";
 
-    public async Task<SdkOutcome> SubmitAsync(Guid attemptId, EmailMessage message, CancellationToken cancellationToken)
+    public async Task<EmailSendResult> SubmitAsync(Guid attemptId, EmailMessageInput message, CancellationToken cancellationToken)
     {
         var endpoint = new Uri(configuration["MailpitEndpoint"] ?? throw new InvalidOperationException("Mailpit endpoint missing."));
         using var mime = new MimeMessage();
@@ -31,5 +31,5 @@ internal sealed class MailpitSender(
         return new(true, mime.MessageId);
     }
 
-    private static MailboxAddress Address(Mailbox mailbox) => new(mailbox.DisplayName ?? "", mailbox.Address);
+    private static MailboxAddress Address(MailboxInput mailbox) => new(mailbox.DisplayName ?? "", mailbox.Address);
 }

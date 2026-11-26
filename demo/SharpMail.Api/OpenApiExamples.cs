@@ -16,7 +16,7 @@ internal static class OpenApiExamples
             return Task.CompletedTask;
         });
 
-    public static SubmitRequest Receipt => new("order-42", new EmailMessage(
+    public static EmailSubmissionInput Receipt => new("order-42", new EmailMessageInput(
         new("store@demo.invalid"), [new("customer@demo.invalid")], [new("accounts@demo.invalid")],
         [], null, new("Receipt for order 42", "<p>Thank you for your order.</p>", "Thank you for your order.")));
 }

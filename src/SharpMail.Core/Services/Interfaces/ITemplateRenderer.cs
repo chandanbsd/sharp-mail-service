@@ -4,6 +4,6 @@ namespace SharpMail.Core.Services.Interfaces;
 
 public interface ITemplateRenderer
 {
-    Task<RenderedContent> RenderAsync(string templateKey, IReadOnlyDictionary<string, string> model,
+    Task<TemplateRenderResult> RenderAsync(string templateKey, IReadOnlyDictionary<string, string> model,
         CancellationToken cancellationToken);
 }

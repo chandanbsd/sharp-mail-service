@@ -8,10 +8,12 @@ SharpMail records the finalized message before invoking an application's mailer 
 |---|---|
 | SharpMail.Data | Message and audit records, delivery identity, serialization, and the storage contract. |
 | SharpMail.Core | Submission, lookup, delivery recording, and host-facing sender and renderer interfaces. Depends on Data. |
-| SharpMail.Sink.Blobs | Azure Blob Storage persistence. Depends on Data. |
-| SharpMail.Sink.Cosmos | Cosmos DB persistence. Depends on Data. |
-| SharpMail.Sink.AzureSQLServer | EF Core context, migrations, and Azure SQL persistence. Depends on Data. |
+| SharpMail.Context.AzureBlobStorage | Azure Blob Storage persistence. Depends on Data. |
+| SharpMail.Context.AzureCosmosDb | Cosmos DB persistence. Depends on Data. |
+| SharpMail.Context.AzureSqlServer | EF Core context, migrations, and Azure SQL persistence. Depends on Data. |
 | SharpMail.Renderer.Liquid | Liquid rendering and template registration. Implements the Core renderer interface. |
+
+Name operation inputs with an `Input` suffix and returned models with a `Result` suffix. For example, `EmailSendResult` reports what the SDK adapter observed, and `EmailSubmissionResult` includes the audited submission and its persistence status. EF row types and status enums retain their persistence and domain names.
 
 Place each primary constructor parameter on its own line, starting on the line after the opening parenthesis. Use one named type per file and match its namespace to its project and folder. The build enforces C# style through SDK analyzers, EditorConfig, and the one-type-per-file analyzer. Run `dotnet format --verify-no-changes` to check formatting.
 
@@ -72,7 +74,7 @@ Look at [the walkthrough](demo/Walkthrough.cs) for the request and response exam
 
 ## Integrate in a host
 
-Reference the core library and one store package. Implement `IEmailSender` using your SDK, assign a transport name scoped to the provider account, then register it with `AddSharpMail<TSender>()`. The adapter receives the attempt ID and finalized message. Return an SDK outcome and, if available, a provider message ID. The optional Liquid package provides `AddLiquidEmailTemplates(rootDirectory)`; any renderer that produces `RenderedContent` can feed the same submission service.
+Reference the core library and one context package. Implement `IEmailSender` using your SDK, assign a transport name scoped to the provider account, then register it with `AddSharpMail<TSender>()`. The adapter receives the attempt ID and finalized message. Return an `EmailSendResult` and, if available, a provider message ID. The optional Liquid package provides `AddLiquidEmailTemplates(rootDirectory)`; any renderer that produces `TemplateRenderResult` can feed the same submission service.
 
 | Store registration | Host provisioning |
 |---|---|

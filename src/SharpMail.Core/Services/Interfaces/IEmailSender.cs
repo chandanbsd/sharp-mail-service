@@ -6,5 +6,5 @@ namespace SharpMail.Core.Services.Interfaces;
 public interface IEmailSender
 {
     string Transport { get; }
-    Task<SdkOutcome> SubmitAsync(Guid attemptId, EmailMessage message, CancellationToken cancellationToken);
+    Task<EmailSendResult> SubmitAsync(Guid attemptId, EmailMessageInput message, CancellationToken cancellationToken);
 }

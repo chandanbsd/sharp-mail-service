@@ -12,7 +12,7 @@ internal sealed class LiquidEmailRenderer(
     private readonly TemplateOptions options = new TemplateOptionsBuilder().WithStrictVariables(true)
         .WithStrictFilters(true).WithMaxSteps(100_000).Build();
 
-    public async Task<RenderedContent> RenderAsync(string templateKey, IReadOnlyDictionary<string, string> model,
+    public async Task<TemplateRenderResult> RenderAsync(string templateKey, IReadOnlyDictionary<string, string> model,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(templateKey);
