@@ -25,7 +25,7 @@ partial class _20261125185351_CreateEmailAudit
 
         SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-        modelBuilder.Entity("SharpMail.Sink.AzureSQLServer.AttemptRow", b =>
+        modelBuilder.Entity("SharpMail.Sink.AzureSQLServer.Models.AttemptRow", b =>
             {
                 b.Property<Guid>("AttemptId")
                     .ValueGeneratedOnAdd()
@@ -51,7 +51,7 @@ partial class _20261125185351_CreateEmailAudit
                 b.ToTable("SharpMailAttempts");
             });
 
-        modelBuilder.Entity("SharpMail.Sink.AzureSQLServer.DeliveryRow", b =>
+        modelBuilder.Entity("SharpMail.Sink.AzureSQLServer.Models.DeliveryRow", b =>
             {
                 b.Property<Guid>("AttemptId")
                     .HasColumnType("uniqueidentifier");
@@ -69,9 +69,9 @@ partial class _20261125185351_CreateEmailAudit
                 b.ToTable("SharpMailDeliveries");
             });
 
-        modelBuilder.Entity("SharpMail.Sink.AzureSQLServer.DeliveryRow", b =>
+        modelBuilder.Entity("SharpMail.Sink.AzureSQLServer.Models.DeliveryRow", b =>
             {
-                b.HasOne("SharpMail.Sink.AzureSQLServer.AttemptRow", null)
+                b.HasOne("SharpMail.Sink.AzureSQLServer.Models.AttemptRow", null)
                     .WithMany()
                     .HasForeignKey("AttemptId")
                     .OnDelete(DeleteBehavior.Cascade)

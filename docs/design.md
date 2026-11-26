@@ -28,7 +28,7 @@ flowchart LR
     Lookup --> Store
 ```
 
-Each deployment chooses one audit backend. SharpMail.Data owns the audit schema and store contract. SharpMail.Core owns submission, lookup, delivery recording, and the sender and renderer contracts. Each sink depends on Data. The optional Liquid package implements the Core renderer contract. DI registration binds the selected store and the host's adapter. For SQL the goal is a connection configuration and one registration call. The package supplies mappings and schema migrations, and the host controls migration deployment.
+Each deployment chooses one audit backend. SharpMail.Data owns the audit schema and IEmailAuditDataContext persistence contract. SharpMail.Core owns submission, lookup, delivery recording, and the sender and renderer contracts. Each sink depends on Data. The optional Liquid package implements the Core renderer contract. DI registration binds the selected store and the host's adapter. For SQL the goal is a connection configuration and one registration call. The package supplies mappings and schema migrations, and the host controls migration deployment.
 
 ## Message preparation
 
