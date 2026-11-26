@@ -1,8 +1,10 @@
 using System.Text.Json.Serialization;
 using Scalar.AspNetCore;
-using SharpMail;
 using SharpMail.Api;
-using SharpMail.Liquid;
+using SharpMail.Api.Contracts;
+using SharpMail.Core;
+using SharpMail.Data;
+using SharpMail.Renderer.Liquid;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
@@ -58,8 +60,3 @@ while (true)
     }
 }
 await app.RunAsync();
-
-internal sealed record TemplateRequest(string TemplateKey, Dictionary<string, string> Model);
-internal sealed record SubmitRequest(string? CorrelationId, EmailMessage Message);
-internal sealed record DeliveryRequest(Guid? AttemptId, string? Transport, string? ProviderMessageId, DeliveryNotification Notification);
-internal sealed record DeliveryReceipt(bool Appended);

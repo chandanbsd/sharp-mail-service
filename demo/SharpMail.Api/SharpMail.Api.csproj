@@ -2,11 +2,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="3.2.1" />
-    <ProjectReference Include="../../src/SharpMail/SharpMail.csproj" />
-    <ProjectReference Include="../../src/SharpMail.SqlServer/SharpMail.SqlServer.csproj" />
-    <ProjectReference Include="../../src/SharpMail.Blobs/SharpMail.Blobs.csproj" />
-    <ProjectReference Include="../../src/SharpMail.Cosmos/SharpMail.Cosmos.csproj" />
-    <ProjectReference Include="../../src/SharpMail.Liquid/SharpMail.Liquid.csproj" />
+    <ProjectReference Include="../../src/SharpMail.Core/SharpMail.Core.csproj" />
+    <ProjectReference Include="../../src/SharpMail.Sink.AzureSQLServer/SharpMail.Sink.AzureSQLServer.csproj" />
+    <ProjectReference Include="../../src/SharpMail.Sink.Blobs/SharpMail.Sink.Blobs.csproj" />
+    <ProjectReference Include="../../src/SharpMail.Sink.Cosmos/SharpMail.Sink.Cosmos.csproj" />
+    <ProjectReference Include="../../src/SharpMail.Renderer.Liquid/SharpMail.Renderer.Liquid.csproj" />
     <PackageReference Include="MailKit" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>

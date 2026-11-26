@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../SharpMail.Data/SharpMail.Data.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:11.0 AS build
 WORKDIR /source
-COPY Directory.Build.props global.json ./
+COPY .editorconfig Directory.Build.props global.json ./
 COPY src/ src/
 COPY README.md ./
 COPY demo/Directory.Build.props demo/

@@ -1,7 +1,8 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using SharpMail;
+using SharpMail.Core;
+using SharpMail.Data;
 
 namespace SharpMail.Api;
 

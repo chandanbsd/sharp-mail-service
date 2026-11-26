@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../SharpMail.Data/SharpMail.Data.csproj" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.30.2" />
+  </ItemGroup>
+</Project>

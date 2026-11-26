@@ -1,33 +1,39 @@
 #:property PublishAot=false
-#:project ../src/SharpMail/SharpMail.csproj
+#:project ../src/SharpMail.Core/SharpMail.Core.csproj
 
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json.Serialization;
-using SharpMail;
+using System.Text.Json.Nodes;
+using SharpMail.Core;
+using SharpMail.Data;
 
-var ports = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-{
-    ["sql"] = 18081, ["blobs"] = 18082, ["cosmos"] = 18083
-};
-var stores = args.Length == 0 ? ports.Keys.ToArray() : args;
-if (stores.Any(store => !ports.ContainsKey(store)))
-{
-    Console.Error.WriteLine("Usage: dotnet run demo/Walkthrough.cs -- [sql] [blobs] [cosmos]");
-    return 2;
-}
+namespace SharpMail.Demo;
 
-using var inbox = new HttpClient { BaseAddress = new Uri("http://localhost:18025") };
-foreach (var store in stores)
+internal sealed class Walkthrough(HttpClient api, HttpClient inbox)
 {
-    using var api = new HttpClient { BaseAddress = new Uri($"http://localhost:{ports[store]}") };
-    await new Walkthrough(api, inbox).RunAsync();
-}
-return 0;
+    public static async Task<int> Main(string[] args)
+    {
+        var ports = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["sql"] = 18081, ["blobs"] = 18082, ["cosmos"] = 18083
+        };
+        var stores = args.Length == 0 ? ports.Keys.ToArray() : args;
+        if (stores.Any(store => !ports.ContainsKey(store)))
+        {
+            Console.Error.WriteLine("Usage: dotnet run demo/Walkthrough.cs -- [sql] [blobs] [cosmos]");
+            return 2;
+        }
 
-sealed class Walkthrough(HttpClient api, HttpClient inbox)
-{
-    public async Task RunAsync()
+        using var inbox = new HttpClient { BaseAddress = new Uri("http://localhost:18025") };
+        foreach (var store in stores)
+        {
+            using var api = new HttpClient { BaseAddress = new Uri($"http://localhost:{ports[store]}") };
+            await new Walkthrough(api, inbox).RunAsync();
+        }
+        return 0;
+    }
+
+    private async Task RunAsync()
     {
         using var preview = await api.PostAsJsonAsync("/preview", new
         {
@@ -67,7 +73,7 @@ sealed class Walkthrough(HttpClient api, HttpClient inbox)
             foreach (var expectedAppend in new[] { true, false })
             {
                 using var response = await api.PostAsJsonAsync("/delivery-events", callback, AuditJson.Options);
-                Require((await ReadAsync<EventReceipt>(response)).Appended == expectedAppend, "Unexpected callback deduplication result.");
+                Require((await ReadAsync<JsonObject>(response))["appended"]!.GetValue<bool>() == expectedAppend, "Unexpected callback deduplication result.");
             }
         }
 
@@ -111,8 +117,8 @@ sealed class Walkthrough(HttpClient api, HttpClient inbox)
     private async Task<Uri> NewAttemptAsync()
     {
         using var response = await api.PostAsync("/attempt-ids", null);
-        var reference = await ReadAsync<AttemptReference>(response);
-        return new Uri(api.BaseAddress!, $"/attempts/{reference.AttemptId}");
+        var reference = await ReadAsync<JsonObject>(response);
+        return new Uri(api.BaseAddress!, $"/attempts/{reference["attemptId"]!.GetValue<Guid>()}");
     }
 
     private Task<HttpResponseMessage> SubmitAsync(Uri url, EmailMessage message) =>
@@ -127,7 +133,7 @@ sealed class Walkthrough(HttpClient api, HttpClient inbox)
     private async Task VerifySingleCaptureAsync(Guid id)
     {
         using var response = await inbox.GetAsync($"/api/v1/search?query=message-id:{id}@sharpmail.invalid");
-        Require((await ReadAsync<InboxSearch>(response)).MessageCount == 1, $"Expected one captured message for {id}.");
+        Require((await ReadAsync<JsonObject>(response))["messages_count"]!.GetValue<int>() == 1, $"Expected one captured message for {id}.");
     }
 
     private static async Task<T> ReadAsync<T>(HttpResponseMessage response) where T : class
@@ -141,8 +147,4 @@ sealed class Walkthrough(HttpClient api, HttpClient inbox)
     {
         if (!condition) throw new InvalidOperationException(message);
     }
-
-    private sealed record AttemptReference(Guid AttemptId);
-    private sealed record EventReceipt(bool Appended);
-    private sealed record InboxSearch([property: JsonPropertyName("messages_count")] int MessageCount);
 }

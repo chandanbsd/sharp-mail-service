@@ -2,6 +2,19 @@
 
 SharpMail records the finalized message before invoking an application's mailer and lets support retrieve the exact attempt later. An attempt includes the sender, reply-to, ordered To/Cc/Bcc lists, subject, both supplied bodies, correlation ID, UTC timestamps, SDK outcome, and recipient delivery history. The [design review](docs/design.md) explains the lifecycle.
 
+## Library structure
+
+| Package | Responsibility |
+|---|---|
+| SharpMail.Data | Message and audit records, delivery identity, serialization, and the storage contract. |
+| SharpMail.Core | Submission, lookup, delivery recording, and host-facing sender and renderer interfaces. Depends on Data. |
+| SharpMail.Sink.Blobs | Azure Blob Storage persistence. Depends on Data. |
+| SharpMail.Sink.Cosmos | Cosmos DB persistence. Depends on Data. |
+| SharpMail.Sink.AzureSQLServer | EF Core context, migrations, and Azure SQL persistence. Depends on Data. |
+| SharpMail.Renderer.Liquid | Liquid rendering and template registration. Implements the Core renderer interface. |
+
+Use one named type per file and match its namespace to its project and folder. The build enforces C# style through SDK analyzers, EditorConfig, and the one-type-per-file analyzer. Run `dotnet format --verify-no-changes` to check formatting.
+
 ## Run locally
 
 Use .NET SDK 11.0.100 or a compatible 11.0.1xx patch, Aspire CLI 17, and a running Podman machine. From the repository root run:
@@ -71,4 +84,4 @@ The demo provisions the resources on startup. The SQL provider stores the comple
 - If the completion write fails, the caller receives the observed SDK outcome with `OutcomePersisted=false`; the demo returns HTTP 503. A later lookup may still be Pending. An intentional resend requires a new attempt ID. SharpMail performs no automatic resubmission.
 - An authenticated host callback can supply a delivery event independently of SDK completion. A stable event ID and recipient position deduplicate repeat notifications. Use the echoed attempt ID for early callbacks; provider-ID lookup becomes available when the mapping has been stored.
 
-Build the solution with `dotnet build`. The five library projects under `src` produce NuGet packages with `dotnet pack -c Release`. The demo API and Aspire AppHost consume these projects directly.
+Build the solution with `dotnet build`. The six library projects under `src` produce NuGet packages with `dotnet pack -c Release`. The demo API and Aspire AppHost consume these projects directly.
