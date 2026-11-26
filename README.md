@@ -13,7 +13,7 @@ SharpMail records the finalized message before invoking an application's mailer 
 | SharpMail.Sink.AzureSQLServer | EF Core context, migrations, and Azure SQL persistence. Depends on Data. |
 | SharpMail.Renderer.Liquid | Liquid rendering and template registration. Implements the Core renderer interface. |
 
-Use one named type per file and match its namespace to its project and folder. The build enforces C# style through SDK analyzers, EditorConfig, and the one-type-per-file analyzer. Run `dotnet format --verify-no-changes` to check formatting.
+Place each primary constructor parameter on its own line, starting on the line after the opening parenthesis. Use one named type per file and match its namespace to its project and folder. The build enforces C# style through SDK analyzers, EditorConfig, and the one-type-per-file analyzer. Run `dotnet format --verify-no-changes` to check formatting.
 
 ## Run locally
 

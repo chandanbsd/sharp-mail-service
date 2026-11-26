@@ -9,7 +9,9 @@ using SharpMail.Data;
 
 namespace SharpMail.Demo;
 
-internal sealed class Walkthrough(HttpClient api, HttpClient inbox)
+internal sealed class Walkthrough(
+    HttpClient api,
+    HttpClient inbox)
 {
     public static async Task<int> Main(string[] args)
     {

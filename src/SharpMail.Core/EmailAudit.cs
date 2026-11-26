@@ -2,7 +2,9 @@ using SharpMail.Data;
 
 namespace SharpMail.Core;
 
-public sealed class EmailAudit(IAuditStore store, TimeProvider clock)
+public sealed class EmailAudit(
+    IAuditStore store,
+    TimeProvider clock)
 {
     public async Task<AuditDetail?> GetAsync(Guid id, CancellationToken token)
     {

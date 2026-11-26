@@ -5,7 +5,8 @@ using SharpMail.Data;
 
 namespace SharpMail.Renderer.Liquid;
 
-public sealed class LiquidEmailRenderer(string rootDirectory) : ITemplateRenderer
+public sealed class LiquidEmailRenderer(
+    string rootDirectory) : ITemplateRenderer
 {
     private readonly FluidParser parser = new();
     private readonly TemplateOptions options = new TemplateOptionsBuilder().WithStrictVariables(true)

@@ -4,7 +4,8 @@ using SharpMail.Data;
 
 namespace SharpMail.Sink.AzureSQLServer;
 
-internal sealed class SqlAuditStore(IDbContextFactory<EmailAuditContext> contexts) : IAuditStore
+internal sealed class SqlAuditStore(
+    IDbContextFactory<EmailAuditContext> contexts) : IAuditStore
 {
     public async Task<bool> TryCreateAsync(EmailAttempt attempt, CancellationToken token)
     {
