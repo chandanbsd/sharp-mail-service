@@ -1,4 +1,3 @@
-using SharpMail.Data;
 using SharpMail.Data.Models;
 
 namespace SharpMail.Api.Models;

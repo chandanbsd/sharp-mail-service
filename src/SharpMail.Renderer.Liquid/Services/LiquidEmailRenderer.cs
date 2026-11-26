@@ -1,7 +1,6 @@
 using System.Text.Encodings.Web;
 using Fluid;
 using SharpMail.Core.Services.Interfaces;
-using SharpMail.Data;
 using SharpMail.Data.Models;
 
 namespace SharpMail.Renderer.Liquid.Services;

@@ -1,6 +1,5 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
-using SharpMail.Data;
 using SharpMail.Data.Interfaces;
 using SharpMail.Sink.Cosmos.DataContexts;
 

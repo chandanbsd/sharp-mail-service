@@ -1,5 +1,4 @@
 using SharpMail.Core.Services.Interfaces;
-using SharpMail.Data;
 using SharpMail.Data.Interfaces;
 using SharpMail.Data.Models;
 

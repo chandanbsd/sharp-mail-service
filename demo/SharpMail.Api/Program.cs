@@ -7,7 +7,6 @@ using SharpMail.Core.Exceptions;
 using SharpMail.Core.Extensions;
 using SharpMail.Core.Models;
 using SharpMail.Core.Services.Interfaces;
-using SharpMail.Data;
 using SharpMail.Data.Models;
 using SharpMail.Renderer.Liquid.Extensions;
 

@@ -1,4 +1,5 @@
 using SharpMail.Data.Models;
+
 namespace SharpMail.Data.Interfaces;
 
 public interface IEmailAuditDataContext

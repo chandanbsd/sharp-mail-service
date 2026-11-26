@@ -1,7 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SharpMail.Data;
 using SharpMail.Data.Interfaces;
 using SharpMail.Sink.AzureSQLServer.DataContexts;
 

@@ -3,7 +3,6 @@ using MailKit.Security;
 using MimeKit;
 using SharpMail.Core.Models;
 using SharpMail.Core.Services.Interfaces;
-using SharpMail.Data;
 using SharpMail.Data.Models;
 
 namespace SharpMail.Api.Services;
