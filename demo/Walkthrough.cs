@@ -15,7 +15,9 @@ internal sealed class Walkthrough(HttpClient api, HttpClient inbox)
     {
         var ports = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
-            ["sql"] = 18081, ["blobs"] = 18082, ["cosmos"] = 18083
+            ["sql"] = 18081,
+            ["blobs"] = 18082,
+            ["cosmos"] = 18083
         };
         var stores = args.Length == 0 ? ports.Keys.ToArray() : args;
         if (stores.Any(store => !ports.ContainsKey(store)))
