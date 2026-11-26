@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../SharpMail.Core/SharpMail.Core.csproj" />
+    <PackageReference Include="Fluid.Core" Version="3.0.0" />
+  </ItemGroup>
+</Project>

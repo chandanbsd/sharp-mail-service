@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/demo/">
+    <Project Path="demo/SharpMail.Api/SharpMail.Api.csproj" />
+    <Project Path="demo/SharpMail.AppHost/SharpMail.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/SharpMail.Core/SharpMail.Core.csproj" />
+    <Project Path="src/SharpMail.Data/SharpMail.Data.csproj" />
+  </Folder>
+  <Folder Name="/src/Renderers/">
+    <Project Path="src/SharpMail.Renderer.Liquid/SharpMail.Renderer.Liquid.csproj" />
+  </Folder>
+  <Folder Name="/src/Sinks/">
+    <Project Path="src/SharpMail.Sink.AzureSQLServer/SharpMail.Sink.AzureSQLServer.csproj" />
+    <Project Path="src/SharpMail.Sink.Blobs/SharpMail.Sink.Blobs.csproj" />
+    <Project Path="src/SharpMail.Sink.Cosmos/SharpMail.Sink.Cosmos.csproj" />
+  </Folder>
+</Solution>
