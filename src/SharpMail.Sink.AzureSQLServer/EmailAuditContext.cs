@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SharpMail.Sink.AzureSQLServer.Models;
 
 namespace SharpMail.Sink.AzureSQLServer;
 

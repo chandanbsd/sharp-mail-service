@@ -1,7 +1,8 @@
 using System.Text.Json;
 using Microsoft.OpenApi;
-using SharpMail.Api.Contracts;
+using SharpMail.Api.Models;
 using SharpMail.Data;
+using SharpMail.Data.Models;
 
 namespace SharpMail.Api;
 

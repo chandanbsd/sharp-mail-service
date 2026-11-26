@@ -3,8 +3,9 @@ using Azure.Storage.Blobs;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using SharpMail.Sink.AzureSQLServer;
-using SharpMail.Sink.Blobs;
-using SharpMail.Sink.Cosmos;
+using SharpMail.Sink.AzureSQLServer.Extensions;
+using SharpMail.Sink.Blobs.Extensions;
+using SharpMail.Sink.Cosmos.Extensions;
 
 namespace SharpMail.Api;
 

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using SharpMail.Data.Models;
 
 namespace SharpMail.Data;
 

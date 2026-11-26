@@ -15,6 +15,12 @@ SharpMail records the finalized message before invoking an application's mailer 
 
 Place each primary constructor parameter on its own line, starting on the line after the opening parenthesis. Use one named type per file and match its namespace to its project and folder. The build enforces C# style through SDK analyzers, EditorConfig, and the one-type-per-file analyzer. Run `dotnet format --verify-no-changes` to check formatting.
 
+## What is an attempt?
+
+An attempt is one intentional submission of a finalized email to the mailer. SharpMail allocates an attempt ID so a support ticket can point to that exact message, even if submission fails. Calling submit again with the same ID and content returns the recorded result. Deliberately sending another copy uses a new ID. Both copies can share the application's correlation ID, such as an order number. Later delivery or bounce events belong to the original submission.
+
+Inject `IEmailSubmissionService` to allocate an ID and submit, and `IEmailAuditService` to retrieve the record or append delivery events. Both live under `SharpMail.Core.Services.Interfaces`, alongside the sender and renderer interfaces. Storage providers implement `SharpMail.Data.Interfaces.IEmailAuditDataContext`. Custom exceptions live in `SharpMail.Core.Exceptions`, data contracts in the owning project's `Models` namespace, and DI extension methods in each package's `Extensions` namespace.
+
 ## Run locally
 
 Use .NET SDK 11.0.100 or a compatible 11.0.1xx patch, Aspire CLI 17, and a running Podman machine. From the repository root run:
@@ -42,7 +48,7 @@ Open [SQL](http://localhost:18081/scalar), [Blob](http://localhost:18082/scalar)
 
 ## Step through a request
 
-The demo container publishes a Debug build with portable symbols for the API and libraries. In Visual Studio for Windows 18.10 or later, open the matching source checkout, choose **Debug > Attach to Process**, select **Podman** as the connection type, then select the API container for the backend you are exercising and its `dotnet` process. Set a breakpoint in `EmailSubmission.SubmitAsync` and send a PUT request through that backend’s Scalar page. The IDE must be able to reach the container engine. Podman discovery on a Windows workstation and access to a separate Mac’s Podman VM are different setups. See [Microsoft’s container attachment guide](https://learn.microsoft.com/en-us/visualstudio/debugger/attach-to-process-running-in-docker-container).
+The demo container publishes a Debug build with portable symbols for the API and libraries. In Visual Studio for Windows 18.10 or later, open the matching source checkout, choose **Debug > Attach to Process**, select **Podman** as the connection type, then select the API container for the backend you are exercising and its `dotnet` process. Set a breakpoint in `EmailSubmissionService.SubmitAsync` and send a PUT request through that backend’s Scalar page. The IDE must be able to reach the container engine. Podman discovery on a Windows workstation and access to a separate Mac’s Podman VM are different setups. See [Microsoft’s container attachment guide](https://learn.microsoft.com/en-us/visualstudio/debugger/attach-to-process-running-in-docker-container).
 
 ## Exercise the API
 

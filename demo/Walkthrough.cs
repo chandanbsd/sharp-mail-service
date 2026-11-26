@@ -1,10 +1,11 @@
 #:property PublishAot=false
 #:project ../src/SharpMail.Core/SharpMail.Core.csproj
 
-using System.Net;
 using System.Net.Http.Json;
+using System.Net;
 using System.Text.Json.Nodes;
-using SharpMail.Core;
+using SharpMail.Core.Models;
+using SharpMail.Data.Models;
 using SharpMail.Data;
 
 namespace SharpMail.Demo;
