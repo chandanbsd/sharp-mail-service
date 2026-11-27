@@ -1,0 +1,24 @@
+# baseline version=0.2.0 sha256=9a790ce560a64dce25d7b7357c136c283138f93716abbcc385c2b29c411568fe
+# Owned by the baseline and replaced on update. It runs baseline/check.py on every pull request.
+name: baseline check
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install the Mermaid renderer
+        run: npm install --global @mermaid-js/mermaid-cli@12
+      - name: Check baseline/
+        run: python3 baseline/check.py

@@ -2,3 +2,6 @@ bin/
 obj/
 .aspire/
 *.user
+
+.vscode/
+.idea/

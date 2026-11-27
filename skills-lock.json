@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "skills": {
+    "baseline-brainstorm": {
+      "source": "chandanbsd/baseline-framework",
+      "commit": "e53521826c8ae73cea8363b632a2b3b348ac86a2",
+      "sourceType": "github",
+      "skillPath": "skills/baseline-brainstorm/SKILL.md",
+      "computedHash": "d6e08ab6be029abf9d39f91bef831b9c87cf8de6c91f05026ffc02a5992cd490"
+    },
+    "baseline-documentation": {
+      "source": "chandanbsd/baseline-framework",
+      "commit": "e53521826c8ae73cea8363b632a2b3b348ac86a2",
+      "sourceType": "github",
+      "skillPath": "skills/baseline-documentation/SKILL.md",
+      "computedHash": "9f25153a432c272a840208298d14b75da6d276cbd31b06bf7bc95acf82164e1e"
+    },
+    "baseline-init": {
+      "source": "chandanbsd/baseline-framework",
+      "commit": "e53521826c8ae73cea8363b632a2b3b348ac86a2",
+      "sourceType": "github",
+      "skillPath": "skills/baseline-init/SKILL.md",
+      "computedHash": "a9706b3994e61da8c123136732266ccac88a8b4f0bf5e0b0fad9eec2aa3a923b"
+    },
+    "baseline-refactor": {
+      "source": "chandanbsd/baseline-framework",
+      "commit": "e53521826c8ae73cea8363b632a2b3b348ac86a2",
+      "sourceType": "github",
+      "skillPath": "skills/baseline-refactor/SKILL.md",
+      "computedHash": "e6ba2794d6db62677921c2d2f945903303cd93d39c447a896197c4bf49292a6f"
+    }
+  }
+}
