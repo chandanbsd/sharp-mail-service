@@ -4,8 +4,8 @@ using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using SharpMail.Data;
+using SharpMail.Data.Entities;
 using SharpMail.Data.Interfaces;
-using SharpMail.Data.Models;
 
 namespace SharpMail.Context.AzureBlobStorage.DataContexts;
 
@@ -15,13 +15,13 @@ internal sealed class AzureBlobStorageDataContext(
     private BlobClient Snapshot(Guid id) => container.GetBlobClient($"attempts/{id:D}/snapshot");
     private BlobClient Outcome(Guid id) => container.GetBlobClient($"attempts/{id:D}/outcome");
 
-    public Task<bool> TryCreateAsync(EmailAttemptResult attempt, CancellationToken token) =>
+    public Task<bool> TryCreateAsync(EmailAttempt attempt, CancellationToken token) =>
         CreateAsync(Snapshot(attempt.AttemptId), attempt, token);
 
-    public async Task<EmailAttemptResult?> FindAsync(Guid attemptId, CancellationToken token) =>
-        await ReadAsync<EmailAttemptResult>(Outcome(attemptId), token) ?? await ReadAsync<EmailAttemptResult>(Snapshot(attemptId), token);
+    public async Task<EmailAttempt?> FindAsync(Guid attemptId, CancellationToken token) =>
+        await ReadAsync<EmailAttempt>(Outcome(attemptId), token) ?? await ReadAsync<EmailAttempt>(Snapshot(attemptId), token);
 
-    public async Task CompleteAsync(EmailAttemptResult completed, CancellationToken token)
+    public async Task CompleteAsync(EmailAttempt completed, CancellationToken token)
     {
         if (completed.ProviderMessageId is { } messageId)
         {
@@ -46,16 +46,16 @@ internal sealed class AzureBlobStorageDataContext(
         return matches;
     }
 
-    public Task<bool> TryAppendAsync(Guid attemptId, RecordedDeliveryEventResult delivery, CancellationToken token) =>
+    public Task<bool> TryAppendAsync(Guid attemptId, RecipientDeliveryEvent delivery, CancellationToken token) =>
         CreateAsync(container.GetBlobClient($"attempts/{attemptId:D}/events/{DeliveryIdentity.Key(delivery.Notification)}"), delivery, token);
 
-    public async Task<IReadOnlyList<RecordedDeliveryEventResult>> ReadEventsAsync(Guid attemptId, CancellationToken token)
+    public async Task<IReadOnlyList<RecipientDeliveryEvent>> ReadEventsAsync(Guid attemptId, CancellationToken token)
     {
-        var events = new List<RecordedDeliveryEventResult>();
+        var events = new List<RecipientDeliveryEvent>();
         await foreach (var blob in container.GetBlobsAsync(new GetBlobsOptions { Prefix = $"attempts/{attemptId:D}/events/" }, token))
         {
             var content = await container.GetBlobClient(blob.Name).DownloadContentAsync(token);
-            events.Add(AuditJson.Read<RecordedDeliveryEventResult>(content.Value.Content.ToString()));
+            events.Add(AuditJson.Read<RecipientDeliveryEvent>(content.Value.Content.ToString()));
         }
         return events;
     }

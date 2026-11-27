@@ -13,7 +13,8 @@ internal sealed class EmailAuditService(
         var attempt = await dataContext.FindAsync(id, token);
         if (attempt is null) return null;
         var events = await dataContext.ReadEventsAsync(id, token);
-        return new(attempt, events.OrderBy(e => e.Notification.OccurredAtUtc).ToArray());
+        var history = events.OrderBy(e => e.Notification.OccurredAtUtc).Select(e => e.ToResult()).ToArray();
+        return new(attempt.ToResult(), history);
     }
 
     public async Task<bool?> RecordAsync(Guid? attemptId, string? transport, string? providerMessageId,

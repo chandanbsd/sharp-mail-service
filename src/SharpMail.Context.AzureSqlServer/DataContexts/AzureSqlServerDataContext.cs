@@ -1,29 +1,29 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SharpMail.Data;
+using SharpMail.Data.Entities;
 using SharpMail.Data.Interfaces;
-using SharpMail.Data.Models;
 
 namespace SharpMail.Context.AzureSqlServer.DataContexts;
 
 internal sealed class AzureSqlServerDataContext(
     IDbContextFactory<EmailAuditContext> contexts) : IEmailAuditDataContext
 {
-    public async Task<bool> TryCreateAsync(EmailAttemptResult attempt, CancellationToken token)
+    public async Task<bool> TryCreateAsync(EmailAttempt attempt, CancellationToken token)
     {
         await using var db = await contexts.CreateDbContextAsync(token);
         db.Attempts.Add(new() { AttemptId = attempt.AttemptId, Transport = attempt.Transport, Payload = AuditJson.Write(attempt) });
         return await InsertAsync(db, token);
     }
 
-    public async Task<EmailAttemptResult?> FindAsync(Guid attemptId, CancellationToken token)
+    public async Task<EmailAttempt?> FindAsync(Guid attemptId, CancellationToken token)
     {
         await using var db = await contexts.CreateDbContextAsync(token);
         var payload = await db.Attempts.Where(a => a.AttemptId == attemptId).Select(a => a.Payload).SingleOrDefaultAsync(token);
-        return payload is null ? null : AuditJson.Read<EmailAttemptResult>(payload);
+        return payload is null ? null : AuditJson.Read<EmailAttempt>(payload);
     }
 
-    public async Task CompleteAsync(EmailAttemptResult completed, CancellationToken token)
+    public async Task CompleteAsync(EmailAttempt completed, CancellationToken token)
     {
         await using var db = await contexts.CreateDbContextAsync(token);
         var payload = AuditJson.Write(completed);
@@ -41,18 +41,18 @@ internal sealed class AzureSqlServerDataContext(
             .Select(a => a.AttemptId).Take(2).ToListAsync(token);
     }
 
-    public async Task<bool> TryAppendAsync(Guid attemptId, RecordedDeliveryEventResult delivery, CancellationToken token)
+    public async Task<bool> TryAppendAsync(Guid attemptId, RecipientDeliveryEvent delivery, CancellationToken token)
     {
         await using var db = await contexts.CreateDbContextAsync(token);
         db.Deliveries.Add(new() { AttemptId = attemptId, EventKey = DeliveryIdentity.Key(delivery.Notification), Payload = AuditJson.Write(delivery) });
         return await InsertAsync(db, token);
     }
 
-    public async Task<IReadOnlyList<RecordedDeliveryEventResult>> ReadEventsAsync(Guid attemptId, CancellationToken token)
+    public async Task<IReadOnlyList<RecipientDeliveryEvent>> ReadEventsAsync(Guid attemptId, CancellationToken token)
     {
         await using var db = await contexts.CreateDbContextAsync(token);
         var rows = await db.Deliveries.Where(e => e.AttemptId == attemptId).Select(e => e.Payload).ToListAsync(token);
-        return rows.Select(AuditJson.Read<RecordedDeliveryEventResult>).ToArray();
+        return rows.Select(AuditJson.Read<RecipientDeliveryEvent>).ToArray();
     }
 
     private static async Task<bool> InsertAsync(EmailAuditContext db, CancellationToken token)
